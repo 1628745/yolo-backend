@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environment
+venv/
+.env/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized / DLL files
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Logs and outputs
+*.log
+*.out
+*.err
+
+# Cache
+.cache/
+.pytest_cache/
+
+# IDE / OS files
+.DS_Store
+.vscode/
+.idea/
+
+# YOLO model weights (too large for GitHub)
+*.pt
+*.pth
+
+# Render / deployment-specific
+__pycache__/

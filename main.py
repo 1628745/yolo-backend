@@ -33,9 +33,12 @@ async def predict(file: UploadFile = File(...)):
     # Run YOLO
     results = model(image)
 
-    # Convert annotated image to bytes in-memory
+    # Convert annotated image (NumPy array) → PIL → bytes → base64
+    annotated_array = results[0].plot()  # this is a NumPy array
+    annotated_image = Image.fromarray(annotated_array)
+
     buffer = io.BytesIO()
-    results[0].plot().save(buffer, format="JPEG")  # annotated image
+    annotated_image.save(buffer, format="JPEG")
     buffer.seek(0)
     img_str = base64.b64encode(buffer.read()).decode("utf-8")
 
@@ -53,4 +56,5 @@ async def predict(file: UploadFile = File(...)):
         "detections": detections,
         "image_base64": img_str
     })
+
 

@@ -23,6 +23,8 @@ async def root():
     return {"message": "Backend is running!"}
 
 
+import base64
+
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     contents = await file.read()
@@ -31,10 +33,11 @@ async def predict(file: UploadFile = File(...)):
     # Run YOLO
     results = model(image)
 
-    # Save annotated image with unique filename
-    output_name = f"{uuid.uuid4()}.jpg"
-    save_path = os.path.join("static", output_name)
-    results[0].save(filename=save_path)
+    # Convert annotated image to bytes in-memory
+    buffer = io.BytesIO()
+    results[0].plot().save(buffer, format="JPEG")  # annotated image
+    buffer.seek(0)
+    img_str = base64.b64encode(buffer.read()).decode("utf-8")
 
     # Extract labels & confidences
     detections = []
@@ -45,7 +48,9 @@ async def predict(file: UploadFile = File(...)):
             "bbox": box.xyxy[0].tolist()
         })
 
+    # Return JSON with detections and Base64 image
     return JSONResponse({
         "detections": detections,
-        "image_url": f"/static/{output_name}"
+        "image_base64": img_str
     })
+

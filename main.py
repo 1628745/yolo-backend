@@ -18,6 +18,11 @@ app.add_middleware(
 
 model = YOLO("model/best.pt")  # Replace with your model path
 
+@app.get("/")
+async def root():
+    return {"message": "Backend is running!"}
+
+
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     contents = await file.read()
